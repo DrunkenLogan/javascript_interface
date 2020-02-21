@@ -1,0 +1,104 @@
+// Dependencies
+@import '../variables.scss';
+@import '../mixins.scss';
+
+// Variables
+$input: $secondary-colour;
+$input-focus: #7F7F7F;
+
+/**************
+* Global Styles
+***************/
+html {
+    background: url(../images/background.jpg) no-repeat center/cover;
+}
+
+body {
+    width: 90vw;
+    max-width: 500px;
+    min-height: 100vh;
+    margin: 15px auto;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+h1 {
+    font-weight: 600;
+    font-size: 3em;
+    margin-top: 40px;
+}
+
+main {
+    width: 90%;
+    font-size: 16px;
+    text-align: center;
+}
+
+label {
+    display: inline-block;
+}
+
+form {
+    text-align: left;
+    margin-bottom: 55px;
+
+    p {
+        text-align: right;
+        margin: 9px 0 45px 0;
+    }
+}
+
+label[for="password"] {
+    margin-top: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    @include inputReset;
+    color: $secondary-colour;
+    border-bottom: 2px solid $secondary-colour;
+    padding: .8em;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+input~.border_effect {
+    display: block;
+    transition: all 400ms;
+    width: 0;
+    height: 2px;
+    background-color: $input-focus;
+    position: relative;
+    bottom: 2px;
+}
+
+input#username:focus+.border_effect,
+input#password:focus+.border_effect {
+    width: 100%;
+}
+
+input[type="button"] {
+    @include inputReset;
+    border-radius: 25px;
+    font-size: 1.3em;
+    margin-top: 45px;
+    height: 50px;
+    color: white;
+    background: #a64bf4;
+    background: linear-gradient(to right, #00dbde, #fc00ff);
+    background: -webkit-linear-gradient(to right, #00dbde, #fc00ff);
+}
+
+.social_logins {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 155px;
+
+    img {
+        width: 50px;
+        margin: 5px;
+    }
+}

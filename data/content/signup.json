@@ -1,0 +1,6 @@
+{
+    "head.title": "Sign Up | Site",
+    "head.description": "Description | Site",
+    "head.styles": "../public/css/signup.css",
+    "body.h1": "Sign up"
+}

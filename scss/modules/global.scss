@@ -1,0 +1,28 @@
+// Dependencies
+@import '../variables.scss';
+
+/*******************
+* Content Model Fix
+*******************/
+* {
+    box-sizing: border-box;
+
+    &:before,
+    &:after {
+        box-sizing: inherit;
+    }
+}
+
+/**************
+* Global Styles
+***************/
+
+html {
+    font-family: 'Poppins', sans-serif;
+    color: $primary-colour
+}
+
+a {
+    text-decoration: none;
+    color: $secondary-colour;
+}

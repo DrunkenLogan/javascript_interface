@@ -1,0 +1,24 @@
+/*******************
+* Content Model Fix
+*******************/
+* {
+  box-sizing: border-box;
+}
+*:before, *:after {
+  box-sizing: inherit;
+}
+
+/**************
+* Global Styles
+***************/
+html {
+  font-family: "Poppins", sans-serif;
+  color: #333333;
+}
+
+a {
+  text-decoration: none;
+  color: #B3B3B3;
+}
+
+/*# sourceMappingURL=global.css.map */
