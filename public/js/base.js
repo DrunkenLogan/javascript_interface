@@ -80,6 +80,132 @@ app.client.request = (headersObject, path, method, queryStringObject, payload, c
             }
         })
         .catch(e => {
+            console.log(e);
+
             throw new Error('Something went wrong!')
         })
 }
+
+// Automatically bind forms on page if found
+app.bindForms = () => {
+    // Get all form elements
+    if (document.querySelector('form')) {
+        const allForms = document.querySelectorAll('form');
+
+        // Loop through the form arrays
+        for (const form of allForms) {
+            form.addEventListener('submit', function (e) {
+                // Prevent form default behaviour
+                e.preventDefault();
+
+                // Gather Form Data
+                const formId = this.id;
+                const path = this.action;
+                const method = this.method.toUpperCase();
+
+                // Turn the inputs into payload
+                const payload = {};
+                const formElements = this.elements;
+                for (const el of formElements) {
+                    if (el.name) {
+                        payload[el.name] = el.value;
+                    }
+                }
+
+                // Send form data to server
+                app.client.request(undefined, path, method, undefined, payload, (statusCode, resPayload) => {
+                    if (statusCode !== 200) {
+                        console.log(resPayload)
+                        console.log(statusCode, resPayload.Error)
+                    } else {
+                        // Send to form response processor
+                        app.formResponseProcessor(formId, payload, resPayload);
+                    }
+                })
+            })
+        }
+    }
+}
+
+// Process the data coming back from a successful form submission
+app.formResponseProcessor = (formId, reqPayload, resPayload) => {
+    // Handle form submission response based on form data
+    if (formId === 'signup') {
+        // Take the email and the password and use it to log the user in
+        const newPayload = {
+            email: reqPayload.email,
+            password: reqPayload.password
+        }
+        console.log('Before Login')
+        app.client.request(undefined, 'user/login', 'POST', undefined, newPayload, (statusCode, newResPayload) => {
+            if (statusCode !== 200) {
+                console.log(statusCode, newResPayload.Error)
+            } else {
+                console.log('After Login')
+                // handle session data
+                app.setSession(newResPayload)
+                // Automatically redirect the user to it's profile page
+                window.location = '/my-profile';
+            }
+        })
+    }
+
+    if (formId === 'signin') {
+        // handle session data
+        app.setSession(resPayload)
+        // Automatically redirect the user to it's profile page
+        window.location = '/my-profile';
+    }
+}
+
+// Set a cookie and save the token data to local storage
+app.setSession = (tokenData) => {
+    const tokenString = JSON.stringify(tokenData);
+    // Set a cookie
+    document.cookie = `token=${tokenString}; path="/"; expires=${new Date(tokenData.expires)}`
+    // Persist to local storage
+    localStorage.setItem('token', tokenString);
+}
+
+//@TODO
+// Get token from local storage and set a cookie
+
+// Bind Logout buttons
+app.bindLogoutButtons = () => {
+    const logOutButton = document.querySelector('.logout');
+    // If there are logout buttons on page
+    if (logOutButton) {
+        // Check if there is an active Session
+        const tokenStr = localStorage.getItem('token');
+
+        // Try to parse the token to an object
+        try {
+            const tokenObj = JSON.parse(tokenStr)
+            if (tokenObj) {
+                const queryStringObj = { 'tokenId': tokenObj.id }
+                logOutButton.addEventListener('click', () => {
+                    app.client.request(undefined, 'user/logout', 'POST', queryStringObj, undefined, (statusCode) => {
+                        if (statusCode === 200) {
+                            // Redirect the User to the homepage
+                            window.location = '/'
+                        } else {
+                            console.log(statusCode)
+                        }
+                    })
+                })
+            }
+        } catch (e) {
+            throw new Error('Could not find an active Session Token')
+        }
+    }
+}
+
+app.init = () => {
+    app.bindForms();
+
+    app.bindLogoutButtons();
+}
+
+app.init();
+
+

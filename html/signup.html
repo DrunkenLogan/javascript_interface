@@ -1,0 +1,31 @@
+<header>
+    <h1>{body.h1}</h1>
+</header>
+<main>
+    <form action="{form.action}" id="{form.id}" method="POST">
+        <label for="name">Name*</label>
+        <input name="name" type="text" placeholder="Type your Name" data-validate="Name is required" required>
+        <span class="border_effect"></span>
+        <label for="surname">Surname*</label>
+        <input name="surname" type="text" placeholder="Type your Surname" data-validate="Surname is required" required>
+        <span class="border_effect"></span>
+        <label for="email">Email*</label>
+        <input name="email" type="email" placeholder="Type your Email" data-validate="Email is required" required>
+        <span class="border_effect"></span>
+        <label for="password">Password*</label>
+        <input name="password" type="password" placeholder="Type your password" data-validate="Password is required" required>
+        <span class="border_effect"></span>
+        <label for="password">Confirm Password*</label>
+        <input type="password" placeholder="Type your password" data-validate="Password is required" required>
+        <span class="border_effect"></span>
+        <input type="submit" value="Sign Up">
+    </form>
+    <p>Or Sign Up Using</p>
+    <div class="social_logins">
+        <div><img src="../public/images/facebook.png" alt="facebook logo"></div>
+        <div><img src="../public/images/twitter.png" alt="twitter logo"></div>
+        <div><img src="../public/images/google-plus.png" alt="google+ logo"></div>
+    </div>
+    <p>Or Login Using</p>
+    <a href="/login">Login</p>
+</main>

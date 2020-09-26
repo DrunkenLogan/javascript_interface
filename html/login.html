@@ -2,15 +2,15 @@
     <h1>{body.h1}</h1>
 </header>
 <main>
-    <form action="#">
-        <label for="username">Username</label>
-        <input id="username" type="text" placeholder="Type your username" data-validate="Username is required">
+    <form action="{form.action}" id="{form.id}" method="POST">
+        <label for="email">Email</label>
+        <input name="email" type="email" placeholder="Type your Email" data-validate="Email is required" required>
         <span class="border_effect"></span>
         <label for="password">Password</label>
-        <input id="password" type="text" placeholder="Type your password" data-validate="Password is required">
+        <input name="password" type="password" placeholder="Type your password" data-validate="Password is required" required>
         <span class="border_effect"></span>
         <p>Forgot your password?</p>
-        <input type="button" value="Login">
+        <input type="submit" value="Login">
     </form>
     <p>Or Sign Up Using</p>
     <div class="social_logins">
@@ -19,5 +19,5 @@
         <div><img src="../public/images/google-plus.png" alt="google+ logo"></div>
     </div>
     <p>Or Sign Up Using</p>
-    <a href="account/sign-up">SIGN UP</p>
+    <a href="signup">SIGN UP</p>
 </main>

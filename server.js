@@ -1,11 +1,14 @@
 /* Dependencies */
 const http = require('http');
-const {
-  StringDecoder
-} = require('string_decoder');
-const handlers = require('./lib/handlers');
+const { StringDecoder } = require('string_decoder');
+const handlers = require('./routes/page');
 const helpers = require('./lib/helpers');
 const config = require('./lib/config');
+
+// Routes
+const userRoutes = require('./routes/user');
+const sessionRoutes = require('./routes/session');
+const pageRoutes = require('./routes/page');
 
 // Globals
 const decoder = new StringDecoder('utf8');
@@ -47,21 +50,24 @@ const server = http.createServer((req, res) => {
       payload: helpers.parseJsonToObject(buffer)
     };
 
-    console.log(reqObj);
+    // console.log(reqObj);
 
-    // Figure out with path was requested
+    // Figure out which path was requested
     let chosenHandler =
       typeof router[reqObj.path] !== 'undefined' ?
-      router[reqObj.path] :
-      handlers.notFound;
+        router[reqObj.path] :
+        handlers.notFound;
+
+    console.log(router);
 
     // Figure out if the request is for a public resource
     chosenHandler =
       trimmedPath.indexOf('public/') > -1 ? handlers.public : chosenHandler;
 
-    chosenHandler(reqObj, (statusCode, payload, contentType) => {
+    chosenHandler(reqObj, (statusCode, payload, contentType, headersObj = {}) => {
       statusCode = typeof statusCode === 'number' ? statusCode : 200;
       contentType = typeof contentType === 'string' ? contentType : 'json';
+      headersObj = typeof headersObj === 'object' ? headersObj : {};
 
       // Return the response parts that are content specific
       let stringPayload = '';
@@ -93,7 +99,7 @@ const server = http.createServer((req, res) => {
       }
 
       // Return the global response parts
-      res.writeHead(statusCode);
+      res.writeHead(statusCode, headersObj);
       res.end(stringPayload);
     });
   });
@@ -101,17 +107,19 @@ const server = http.createServer((req, res) => {
 
 // Instantiate req router object
 const router = {
-  '': handlers.home,
-  'login': handlers.login,
-  'logout': handlers.logout,
-  'account/sign-up': handlers.signUp,
-  'account/delete': handlers.deleteAccount,
-  'notFound': handlers.notFound,
-  'public': handlers.public,
-  'api/users': handlers.users,
-  'api/tokens': handlers.tokens
+  'ping': pageRoutes.ping,
+  '': pageRoutes.home,
+  'login': pageRoutes.login,
+  'signup': pageRoutes.signup,
+  'notFound': pageRoutes.notFound,
+  'public': pageRoutes.public,
+  'my-profile': pageRoutes.myProfile,
+  'user/login': sessionRoutes.login,
+  'user/logout': sessionRoutes.logout,
+  'user/signup': userRoutes.signup,
+  'user/profile': userRoutes.profile
 };
 
 server.listen(PORT, () => {
-  console.log(`Listenign on port ${PORT}`);
+  console.log(`Listening on port ${PORT}`);
 });

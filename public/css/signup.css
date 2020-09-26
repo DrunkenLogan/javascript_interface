@@ -8,7 +8,6 @@ html {
 body {
   width: 90vw;
   max-width: 500px;
-  min-height: 100vh;
   margin: 15px auto;
   background-color: white;
   border-radius: 10px;
@@ -24,13 +23,15 @@ h1 {
 }
 
 main {
-  width: 90%;
-  font-size: 16px;
+  width: 80%;
+  font-size: 18px;
   text-align: center;
 }
 
 label {
   display: inline-block;
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 form {
@@ -42,12 +43,7 @@ form p {
   margin: 9px 0 45px 0;
 }
 
-label[for=password] {
-  margin-top: 20px;
-}
-
-input[type=text],
-input[type=password] {
+input {
   width: 100%;
   border: 0;
   outline: none;
@@ -58,7 +54,7 @@ input[type=password] {
   font-size: 1.1em;
 }
 
-input ~ .border_effect {
+.border_effect {
   display: block;
   transition: all 400ms;
   width: 0;
@@ -66,14 +62,19 @@ input ~ .border_effect {
   background-color: #7F7F7F;
   position: relative;
   bottom: 2px;
+  margin-bottom: 35px;
 }
 
-input#username:focus + .border_effect,
-input#password:focus + .border_effect {
+.border_effect:last-child {
+  margin-bottom: auto;
+}
+
+input:focus + .border_effect,
+input:focus + .border_effect {
   width: 100%;
 }
 
-input[type=button] {
+input[type=submit] {
   width: 100%;
   border: 0;
   outline: none;
@@ -90,7 +91,7 @@ input[type=button] {
 .social_logins {
   display: flex;
   justify-content: center;
-  margin-bottom: 155px;
+  margin-bottom: 55px;
 }
 .social_logins img {
   width: 50px;

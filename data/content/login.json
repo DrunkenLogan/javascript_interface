@@ -2,5 +2,7 @@
     "head.title": "Login | Site",
     "head.description": "Description | Site",
     "head.styles": "../public/css/signup.css",
-    "body.h1": "Login"
+    "body.h1": "Login",
+    "form.id": "signin",
+    "form.action": "../user/login"
 }
