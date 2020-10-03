@@ -1,2 +1,2 @@
 # javascript_interface
-A simple interface in raw JavaScript
+A simple interface written plain JavaScript, no express, no npm libraries

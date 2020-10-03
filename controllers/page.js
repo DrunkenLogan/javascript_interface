@@ -27,12 +27,10 @@ pageRoutes.home = (reqData, callback) => {
         _data.read('content', 'home', (err, contentData) => {
             if (!err && contentData) {
                 helpers.getTemplate('home', contentData, (err, templateString) => {
-                    console.log(err);
                     if (!err && templateString) {
                         // Add global templates
                         helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
                             if (!err && finalString) {
-                                console.log(finalString);
                                 callback(200, finalString, 'html');
                             } else {
                                 callback(500, undefined, 'html');
@@ -53,42 +51,39 @@ pageRoutes.home = (reqData, callback) => {
 
 // signup Handler
 pageRoutes.signup = (reqData, callback) => {
-    console.log('dioporco');
     // Only accept get requests
     if (reqData.method === 'get') {
 
         // Check that the user is logged in
-        sessionControllers.validateToken(reqData.headers.cookie, sessionIsValid => {
-            if (sessionIsValid) {
-                // If User is logged in, redirect him to my-profile page
-                callback(302, undefined, undefined, {
-                    Location: `${config.domain}/my-profile`
-                })
-            } else {
-                // Get signup template data
-                _data.read('content', 'signup', (err, contentData) => {
-                    if (!err && contentData) {
+        if (reqData.user) {
+            // If User is logged in, redirect him to my-profile page
+            callback(302, undefined, undefined, {
+                Location: `${config.domain}/my-profile`
+            })
+        } else {
+            // Get signup template data
+            _data.read('content', 'signup', (err, contentData) => {
+                if (!err && contentData) {
 
-                        helpers.getTemplate('signup', contentData, (err, templateString) => {
-                            if (!err && templateString) {
-                                // Add global templates
-                                helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
-                                    if (!err && finalString) {
-                                        callback(200, finalString, 'html');
-                                    } else {
-                                        callback(500, undefined, 'html');
-                                    }
-                                });
-                            } else {
-                                callback(500, undefined, 'html');
-                            }
-                        });
-                    } else {
-                        callback(500, undefined, 'html');
-                    }
-                });
-            }
-        })
+                    helpers.getTemplate('signup', contentData, (err, templateString) => {
+                        if (!err && templateString) {
+                            // Add global templates
+                            helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
+                                if (!err && finalString) {
+                                    callback(200, finalString, 'html');
+                                } else {
+                                    callback(500, undefined, 'html');
+                                }
+                            });
+                        } else {
+                            callback(500, undefined, 'html');
+                        }
+                    });
+                } else {
+                    callback(500, undefined, 'html');
+                }
+            });
+        }
     } else {
         callback(405, undefined, 'html');
     }
@@ -99,36 +94,34 @@ pageRoutes.login = (reqData, callback) => {
     // Only accept get requests
     if (reqData.method === 'get') {
         // Check that the user is logged in
-        sessionControllers.validateToken(reqData.headers.cookie, sessionIsValid => {
-            if (sessionIsValid) {
-                // If User is logged in, redirect him to my-profile page
-                callback(302, undefined, undefined, {
-                    Location: `${config.domain}/my-profile`
-                })
-            } else {
-                // Get login template data
-                _data.read('content', 'login', (err, contentData) => {
-                    if (!err && contentData) {
-                        helpers.getTemplate('login', contentData, (err, templateString) => {
-                            if (!err && templateString) {
-                                // Add global templates
-                                helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
-                                    if (!err && finalString) {
-                                        callback(200, finalString, 'html');
-                                    } else {
-                                        callback(500, undefined, 'html');
-                                    }
-                                });
-                            } else {
-                                callback(500, undefined, 'html');
-                            }
-                        });
-                    } else {
-                        callback(500, undefined, 'html');
-                    }
-                });
-            }
-        })
+        if (reqData.user) {
+            // If User is logged in, redirect him to my-profile page
+            callback(302, undefined, undefined, {
+                Location: `${config.domain}/my-profile`
+            })
+        } else {
+            // Get login template data
+            _data.read('content', 'login', (err, contentData) => {
+                if (!err && contentData) {
+                    helpers.getTemplate('login', contentData, (err, templateString) => {
+                        if (!err && templateString) {
+                            // Add global templates
+                            helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
+                                if (!err && finalString) {
+                                    callback(200, finalString, 'html');
+                                } else {
+                                    callback(500, undefined, 'html');
+                                }
+                            });
+                        } else {
+                            callback(500, undefined, 'html');
+                        }
+                    });
+                } else {
+                    callback(500, undefined, 'html');
+                }
+            });
+        }
     } else {
         callback(405, undefined, 'html');
     }
@@ -170,45 +163,43 @@ pageRoutes.myProfile = (reqData, callback) => {
     // Only accept get requests
     if (reqData.method === 'get') {
         // Check that the user is logged in
-        sessionControllers.validateToken(reqData.headers.cookie, (sessionIsValid, email) => {
-            if (sessionIsValid) {
-                // Get the user data
-                _data.read('users', email, (err, userData) => {
-                    if (!err && userData) {
-                        // Get login template data
-                        _data.read('content', 'myprofile', (err, contentData) => {
-                            if (!err && contentData) {
-                                // Combine user data and Page data in one object
-                                const fullPageData = {
-                                    ...contentData,
-                                    ...userData
-                                };
-                                helpers.getTemplate('myprofile', fullPageData, (err, templateString) => {
-                                    if (!err && templateString) {
-                                        // Add global templates
-                                        helpers.addGlobaltemplates(templateString, fullPageData, (err, finalString) => {
-                                            if (!err && finalString) {
-                                                callback(200, finalString, 'html');
-                                            } else {
-                                                callback(500, undefined, 'html');
-                                            }
-                                        });
-                                    } else {
-                                        callback(500, undefined, 'html');
-                                    }
-                                });
-                            } else {
-                                callback(500, undefined, 'html');
-                            }
-                        });
-                    } else {
-                        callback(500, undefined, 'html')
-                    }
-                })
-            } else {
-                callback(401, undefined, 'html')
-            }
-        })
+        if (reqData.user) {
+            // Get the user data
+            _data.read('users', reqData.user.email, (err, userData) => {
+                if (!err && userData) {
+                    // Get login template data
+                    _data.read('content', 'myprofile', (err, contentData) => {
+                        if (!err && contentData) {
+                            // Combine user data and Page data in one object
+                            const fullPageData = {
+                                ...contentData,
+                                ...userData
+                            };
+                            helpers.getTemplate('myprofile', fullPageData, (err, templateString) => {
+                                if (!err && templateString) {
+                                    // Add global templates
+                                    helpers.addGlobaltemplates(templateString, fullPageData, (err, finalString) => {
+                                        if (!err && finalString) {
+                                            callback(200, finalString, 'html');
+                                        } else {
+                                            callback(500, undefined, 'html');
+                                        }
+                                    });
+                                } else {
+                                    callback(500, undefined, 'html');
+                                }
+                            });
+                        } else {
+                            callback(500, undefined, 'html');
+                        }
+                    });
+                } else {
+                    callback(500, undefined, 'html')
+                }
+            })
+        } else {
+            callback(401, undefined, 'html')
+        }
     } else {
         callback(405, undefined, 'html');
     }
@@ -230,12 +221,10 @@ pageRoutes.public = (reqData, callback) => {
                 callback(200, assetData, contentType);
             } else {
                 callback(404, undefined, 'plain');
-                console.log(err);
             }
         });
     } else {
         callback(404, undefined, 'plain');
-        console.log(err);
     }
 };
 

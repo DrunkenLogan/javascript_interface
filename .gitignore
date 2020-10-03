@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Ad-hoc
+improvements_list.txt

@@ -6,6 +6,7 @@
 const _data = require('../lib/data');
 const helpers = require('../lib/helpers');
 const config = require('../lib/config');
+const sessionControllers = require('./session');
 
 // Instantiate the user handlers Object
 const userControllers = {};
@@ -14,7 +15,6 @@ const userControllers = {};
 // Required Fields: email, password, name, surname
 //@TODO Implement session validation
 userControllers.create = (reqData, callback) => {
-    console.log('diocane');
     // Check the required fields is provided and correct
     const email = helpers.validateEmail(reqData.payload.email) ?
         reqData.payload.email :
@@ -78,23 +78,21 @@ userControllers.read = (reqData, callback) => {
             false;
 
     if (email && tokenId) {
-        // Lookup the token and check if it iscalid for the given user
-        user.session.validateToken.validateToken(tokenId, email, isValid => {
-            if (isValid) {
-                // Check that a the user exist
-                _data.read('users', email, (err, data) => {
-                    if (!err && data) {
-                        // delete the password
-                        delete data.password;
-                        callback(200, data);
-                    } else {
-                        callback(404, config.errors._404);
-                    }
-                });
-            } else {
-                callback(403, config.errors._403);
-            }
-        });
+        // Lookup the token and check if it is valid for the given user
+        if (reqData.user) {
+            // Check that a the user exist
+            _data.read('users', email, (err, data) => {
+                if (!err && data) {
+                    // delete the password
+                    delete data.password;
+                    callback(200, data);
+                } else {
+                    callback(404, config.errors._404);
+                }
+            });
+        } else {
+            callback(403, config.errors._403);
+        }
     } else {
         callback(400, config.errors._400);
     }

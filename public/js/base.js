@@ -136,12 +136,10 @@ app.formResponseProcessor = (formId, reqPayload, resPayload) => {
             email: reqPayload.email,
             password: reqPayload.password
         }
-        console.log('Before Login')
         app.client.request(undefined, 'user/login', 'POST', undefined, newPayload, (statusCode, newResPayload) => {
             if (statusCode !== 200) {
                 console.log(statusCode, newResPayload.Error)
             } else {
-                console.log('After Login')
                 // handle session data
                 app.setSession(newResPayload)
                 // Automatically redirect the user to it's profile page
@@ -166,9 +164,6 @@ app.setSession = (tokenData) => {
     // Persist to local storage
     localStorage.setItem('token', tokenString);
 }
-
-//@TODO
-// Get token from local storage and set a cookie
 
 // Bind Logout buttons
 app.bindLogoutButtons = () => {

@@ -67,7 +67,6 @@ sessionControllers.createSession = (reqData, callback) => {
 // Required Fields: tokens
 sessionControllers.destroySession = (reqData, callback) => {
     // Check that tokenId is provided and valid
-    console.log(reqData.searchParam.get('tokenId'))
     const tokenString = reqData.searchParam.get('tokenId');
     const tokenId = typeof tokenString === 'string' &&
         tokenString.length === 20 ?
@@ -92,35 +91,6 @@ sessionControllers.destroySession = (reqData, callback) => {
         });
     } else {
         callback(400, config.errors._400);
-    }
-};
-
-// A function to validate a token provided through cookies
-sessionControllers.validateToken = (cookies, callback) => {
-    // Get the token from the cookies if provided
-    const token = helpers.getTokenFromCookies(cookies);
-    if (token) {
-        tokenId = typeof token.id === 'string' && token.id.length > 0 ? token.id : false;
-        email = helpers.validateEmail(token.email) ? token.email : false;
-        if (tokenId && email) {
-            // Lookup the token
-            _data.read('tokens', tokenId, (err, tokenData) => {
-                if (!err && tokenData) {
-                    // Check tokenId / Email association & token expiration
-                    if (tokenData.email === email && tokenData.validUntil > Date.now()) {
-                        callback(true, email);
-                    } else {
-                        callback(false);
-                    }
-                } else {
-                    callback(false);
-                }
-            });
-        } else {
-            callback(false)
-        }
-    } else {
-        callback(false)
     }
 };
 
