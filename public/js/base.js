@@ -115,8 +115,6 @@ app.bindForms = () => {
                 // Send form data to server
                 app.client.request(undefined, path, method, undefined, payload, (statusCode, resPayload) => {
                     if (statusCode !== 200) {
-                        console.log(resPayload)
-                        console.log(statusCode, resPayload.Error)
                     } else {
                         // Send to form response processor
                         app.formResponseProcessor(formId, payload, resPayload);
@@ -161,17 +159,18 @@ app.setSession = (tokenData) => {
     const tokenString = JSON.stringify(tokenData);
     // Set a cookie
     document.cookie = `token=${tokenString}; path="/"; expires=${new Date(tokenData.expires)}`
-    // Persist to local storage
-    localStorage.setItem('token', tokenString);
+    // Persist to session storage
+    sessionStorage.setItem('token', tokenString);
 }
 
 // Bind Logout buttons
 app.bindLogoutButtons = () => {
     const logOutButton = document.querySelector('.logout');
+
     // If there are logout buttons on page
     if (logOutButton) {
         // Check if there is an active Session
-        const tokenStr = localStorage.getItem('token');
+        const tokenStr = sessionStorage.getItem('token');
 
         // Try to parse the token to an object
         try {
@@ -195,12 +194,29 @@ app.bindLogoutButtons = () => {
     }
 }
 
+// Redirect to /my-profile if a valid session already exists
+app.verifyToken = () => {
+    // Check if there is an active Session
+    const tokenStr = sessionStorage.getItem('token');
+
+    if (tokenStr) {
+        app.client.request(undefined, 'user/verifyToken', 'POST', undefined, undefined, (statusCode, newResPayload) => {
+            if (statusCode === 200) {
+                if (window.location.pathname === '/login' || window.location.pathname === '/sign-up') {
+                    window.location = '/my-page';
+                }
+            }
+        })
+    }
+}
+
 app.init = () => {
+    app.verifyToken();
+
     app.bindForms();
 
     app.bindLogoutButtons();
 }
 
 app.init();
-
 

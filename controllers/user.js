@@ -100,10 +100,31 @@ userControllers.read = (reqData, callback) => {
 
 // Update User Data
 // Required Fields:
-userControllers.update = (reqData, callback) => { };
+userControllers.update = (reqData, callback) => {
+    if (reqData.user) {
+        reqData.user.surname = 'tooooos';
+        const userString = JSON.stringify(reqData.user);
+        _data.update('users', 'francescoitalia4@gmail.com', userString, (err) => {
+            if (!err) callback(200);
+            else callback(500);
+        })
+    } else {
+        callback(401)
+    }
+};
 
 // Delete User Data
 // Required Fields:
-userControllers.delete = (reqData, callback) => { };
+userControllers.delete = (reqData, callback) => {
+    if (reqData.user) {
+        const userEmail = reqData.user.email
+        _data.delete('users', userEmail, (err) => {
+            if (!err) callback(200);
+            else callback(500);
+        })
+    } else {
+        callback(401);
+    }
+};
 
 module.exports = userControllers;

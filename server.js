@@ -152,7 +152,10 @@ const router = {
   'user/login': sessionRoutes.login,
   'user/logout': sessionRoutes.logout,
   'user/signup': userRoutes.signup,
-  'user/profile': userRoutes.profile
+  'user/update': userRoutes.update,
+  'user/delete': userRoutes.delete,
+  'user/profile': userRoutes.profile,
+  'user/verifyToken': userRoutes.verifyToken
 };
 
 module.exports = Server;

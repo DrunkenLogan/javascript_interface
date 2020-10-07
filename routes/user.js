@@ -19,10 +19,16 @@ userRoutes.profile = (reqData, callback) => userControllers.read(reqData, callba
 
 // Update User Data
 // Required Fields:
-userRoutes.update = (reqData, callback) => { };
+userRoutes.update = (reqData, callback) => userControllers.update(reqData, callback);
 
 // Delete User Data
 // Required Fields:
-userRoutes.delete = (reqData, callback) => { };
+userRoutes.delete = (reqData, callback) => userControllers.delete(reqData, callback);
+
+// If the user is authenticated
+userRoutes.verifyToken = (reqData, callback) => {
+    if (reqData.user) callback(200);
+    else callback(401)
+}
 
 module.exports = userRoutes;
