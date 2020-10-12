@@ -17,6 +17,7 @@ middlewares.validateToken = (req, res, next) => {
         const tokenId = typeof token.id === 'string' && token.id.length > 0 ? token.id : false;
         const email = helpers.validateEmail(token.email) ? token.email : false;
         if (tokenId && email) {
+            console.log(tokenId);
             // Lookup the token
             _data.read('tokens', tokenId, (err, tokenData) => {
                 if (!err && tokenData) {

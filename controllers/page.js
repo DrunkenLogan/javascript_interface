@@ -198,7 +198,7 @@ pageRoutes.myProfile = (reqData, callback) => {
                 }
             })
         } else {
-            callback(302, undefined, undefined, {
+            callback(301, undefined, undefined, {
                 Location: `${config.domain}/login`
             });
         }

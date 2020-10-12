@@ -9,20 +9,15 @@ const userControllers = require('../controllers/user')
 const userRoutes = {};
 
 // Create a User
-// Required Fields: email, password, name, surname
-//@TODO Implement session validation
 userRoutes.signup = (reqData, callback) => userControllers.create(reqData, callback);
 
 // Get User Data
-// Required Fields: email, tokenId
 userRoutes.profile = (reqData, callback) => userControllers.read(reqData, callback);
 
 // Update User Data
-// Required Fields:
 userRoutes.update = (reqData, callback) => userControllers.update(reqData, callback);
 
 // Delete User Data
-// Required Fields:
 userRoutes.delete = (reqData, callback) => userControllers.delete(reqData, callback);
 
 // If the user is authenticated
