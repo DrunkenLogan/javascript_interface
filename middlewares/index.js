@@ -10,14 +10,13 @@ const config = require('../lib/config');
 const middlewares = {};
 
 // A function to validate a token provided through cookies
-middlewares.validateToken = (req, res, next) => {
+middlewares.checkAuthentication = (req, res, next) => {
     // Get the token from the cookies if provided
     const token = helpers.getTokenFromCookies(req.headers.cookie);
     if (token) {
         const tokenId = typeof token.id === 'string' && token.id.length > 0 ? token.id : false;
         const email = helpers.validateEmail(token.email) ? token.email : false;
         if (tokenId && email) {
-            console.log(tokenId);
             // Lookup the token
             _data.read('tokens', tokenId, (err, tokenData) => {
                 if (!err && tokenData) {
@@ -28,7 +27,6 @@ middlewares.validateToken = (req, res, next) => {
                                 req.user = userData;
                                 next();
                             } else {
-                                console.log('####', err);
                                 next();
                             }
                         })

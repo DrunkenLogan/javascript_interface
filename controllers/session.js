@@ -24,30 +24,39 @@ sessionControllers.createSession = (reqData, callback) => {
             false;
 
         if (email && passw) {
-            _data.read('users', email, (err, data) => {
-                if (!err && data) {
+            // Check if the user exists
+            _data.read('users', email, (err, userData) => {
+                if (!err && userData) {
                     // Check that provided password is correct
-                    if (helpers.hash(passw) === data.password) {
-                        // Create token string
-                        const tokenId = helpers.createRandomString(20);
-                        // Set expiration in 1h
-                        const expires = Date.now() + 1000 * 60 * 60;
-                        // Instantiate the token object
-                        const token = {
-                            id: tokenId,
-                            email: data.email,
-                            validUntil: expires
-                        };
-                        // Stringify the token
-                        const tokenStr = JSON.stringify(token);
-                        // Save the token
-                        _data.create('tokens', tokenId, tokenStr, err => {
-                            if (!err) {
-                                callback(200, token);
-                            } else {
-                                callback(500, config.errors._500);
-                            }
-                        });
+                    if (helpers.hash(passw) === userData.password) {
+                        // Check if the user is already logged in
+                        if (!userData.sessionToken) {
+                            sessionControllers.createSessionToken(userData, sessionToken => {
+                                if (sessionToken) {
+                                    callback(200, sessionToken);
+                                } else {
+                                    callback(500, config.errors._500);
+                                }
+                            })
+                        } else {
+                            // Check if the existing token is stil valid
+                            sessionControllers.verifySessionValidity(userData.sessionToken.id, sessionToken => {
+                                // if there is not valid session token
+                                if (!sessionToken) {
+                                    // Create a new one
+                                    sessionControllers.createSessionToken(userData, sessionToken => {
+                                        if (sessionToken) {
+                                            callback(200, sessionToken);
+                                        } else {
+                                            callback(500, config.errors._500);
+                                        }
+                                    })
+                                } else {
+                                    // Otherwise return the existing one
+                                    callback(200, sessionToken);
+                                }
+                            })
+                        }
                     } else {
                         callback(401, config.errors._401);
                     }
@@ -93,5 +102,52 @@ sessionControllers.destroySession = (reqData, callback) => {
         callback(400, config.errors._400);
     }
 };
+
+// Veryfy Session
+sessionControllers.verifySessionValidity = (sessionTokenId, callback) => {
+    // Check if session exists
+    _data.read('tokens', sessionTokenId, (err, sessionToken) => {
+        if (!err, sessionToken) {
+            // Check if token is valid
+            if (sessionToken.validUntil < Date.now()) callback(false);
+            else callback(sessionToken);
+        } else {
+            callback(false);
+        }
+    })
+}
+
+// Create Session Token
+sessionControllers.createSessionToken = (userData, callback) => {
+    // Create session token string
+    const sessionTokenId = helpers.createRandomString(20);
+    // Set expiration in 1h
+    const expires = Date.now() + 1000 * 60 * 60;
+    // Instantiate the session token object
+    const sessionToken = {
+        id: sessionTokenId,
+        email: userData.email,
+        validUntil: expires
+    };
+    // Stringify the token
+    const sessionTokenStr = JSON.stringify(sessionToken);
+    // Save the token
+    _data.create('tokens', sessionTokenId, sessionTokenStr, err => {
+        if (!err) {
+            // Update the user data with the session token data
+            userData.sessionToken = sessionToken;
+
+            _data.update('users', userData.email, JSON.stringify(userData), err => {
+                if (!err) {
+                    callback(sessionToken);
+                } else {
+                    callback(false);
+                }
+            })
+        } else {
+            callback(false);
+        }
+    });
+}
 
 module.exports = sessionControllers;

@@ -1,6 +1,6 @@
 /*********** Dependencies ************/
 const config = require('./lib/config');
-const { validateToken } = require('./middlewares')
+const { checkAuthentication } = require('./middlewares')
 
 // Globals 
 const PORT = config.port;
@@ -10,7 +10,7 @@ const Server = require('./server');
 const app = new Server();
 
 // Run Middlewares
-app.use(validateToken);
+app.use(checkAuthentication);
 
 // Start the server
 app.createServer();
