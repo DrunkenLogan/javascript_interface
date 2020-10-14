@@ -4,9 +4,9 @@
 
 /*********** Dependencies ************/
 const _data = require('../lib/data');
-const helpers = require('../lib/helpers');
-const config = require('../lib/config');
-const sessionControllers = require('./session');
+const helpers = require('../util/helpers');
+const config = require('../config');
+const myLogger = require('../util/logger');
 
 // Instantiate the user handlers Object
 const userControllers = {};
@@ -29,6 +29,8 @@ userControllers.create = (reqData, callback) => {
         if (email && name && surname && passw) {
             // Check if a user with provided email exist
             _data.read('users', email, (err, data) => {
+                // if there is an error then a user with that email is not found
+                // so it doesn't exist
                 if (err) {
                     // Hash the password
                     const hashedPassword = helpers.hash(passw);
@@ -55,6 +57,11 @@ userControllers.create = (reqData, callback) => {
             });
         } else {
             callback(400, config.errors._400);
+            myLogger('error',
+                `User registration failed. 
+                headers: ${JSON.stringify(reqData.headers)}
+                payload: ${JSON.stringify(reqData.payload)}`
+            );
         }
     } else {
         callback(405, config.errors._405);
@@ -125,6 +132,12 @@ userControllers.update = (reqData, callback) => {
             }
         } else {
             callback(401, config.errors._401);
+            myLogger('error',
+                `User update failed. 
+                headers: ${JSON.stringify(reqData.headers)}
+                payload: ${JSON.stringify(reqData.payload)}
+                user: ${JSON.stringify(reqData.user)}`
+            );
         }
     } else {
         callback(405, config.errors._405);
@@ -144,6 +157,12 @@ userControllers.delete = (reqData, callback) => {
             })
         } else {
             callback(401, config.errors._401);
+            myLogger('error',
+                `User deletion failed. 
+                headers: ${JSON.stringify(reqData.headers)}
+                payload: ${JSON.stringify(reqData.payload)}
+                user: ${JSON.stringify(reqData.user)}`
+            );
         }
     } else {
         callback(405, config.errors._405);

@@ -4,8 +4,8 @@
 
 /*********** Dependencies ************/
 const _data = require('../lib/data');
-const helpers = require('../lib/helpers');
-const config = require('../lib/config');
+const helpers = require('../util/helpers');
+const config = require('../config');
 const path = require('path');
 const sessionControllers = require('./session')
 

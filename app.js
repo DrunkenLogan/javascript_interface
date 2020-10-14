@@ -1,5 +1,5 @@
 /*********** Dependencies ************/
-const config = require('./lib/config');
+const config = require('./config');
 const { checkAuthentication } = require('./middlewares')
 
 // Globals 

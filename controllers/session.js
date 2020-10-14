@@ -4,8 +4,9 @@
 
 /*********** Dependencies ************/
 const _data = require('../lib/data');
-const helpers = require('../lib/helpers');
-const config = require('../lib/config');
+const helpers = require('../util/helpers');
+const config = require('../config');
+const myLogger = require('../util/logger');
 
 // Instantiate the session handlers object
 const sessionControllers = {};
@@ -66,6 +67,11 @@ sessionControllers.createSession = (reqData, callback) => {
             });
         } else {
             callback(400, config.errors._400);
+            myLogger('User error',
+                `Session creation failed. 
+                headers: ${JSON.stringify(reqData.headers)}
+                payload: ${JSON.stringify(reqData.payload)}`
+            );
         }
     } else {
         callback(405, config.errors._405)
