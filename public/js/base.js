@@ -15,7 +15,7 @@ app.config = {
 app.client = {};
 
 // Interface for making API calls
-app.client.request = (headersObject, path, method, queryStringObject, payload, callback) => {
+app.client.request = function (headersObject, path, method, queryStringObject, payload, callback) {
     // Set Defaults
     headersObject = typeof (headersObject) === 'object' && headersObject !== null ? headersObject : {};
     path = typeof (path) === 'string' ? path : '/';
@@ -65,11 +65,11 @@ app.client.request = (headersObject, path, method, queryStringObject, payload, c
     // Send the request
     fetch(request)
         // Handle Response
-        .then(res => {
+        .then(function(res) {
             responseStatus = res.status;
             return res.json();
         })
-        .then(data => {
+        .then(function(data) {
             // Callback if requested
             if (callback) {
                 if (data) {
@@ -79,7 +79,7 @@ app.client.request = (headersObject, path, method, queryStringObject, payload, c
                 }
             }
         })
-        .catch(e => {
+        .catch(function(e) {
             console.log(e);
 
             throw new Error('Something went wrong!')
@@ -87,7 +87,7 @@ app.client.request = (headersObject, path, method, queryStringObject, payload, c
 }
 
 // Automatically bind forms on page if found
-app.bindForms = () => {
+app.bindForms = function() {
     // Get all form elements
     if (document.querySelector('form')) {
         const allForms = document.querySelectorAll('form');
@@ -113,7 +113,7 @@ app.bindForms = () => {
                 }
 
                 // Send form data to server
-                app.client.request(undefined, path, method, undefined, payload, (statusCode, resPayload) => {
+                app.client.request(undefined, path, method, undefined, payload, function(statusCode, resPayload) {
                     if (statusCode !== 200) {
                     } else {
                         // Send to form response processor
@@ -126,7 +126,7 @@ app.bindForms = () => {
 }
 
 // Process the data coming back from a successful form submission
-app.formResponseProcessor = (formId, reqPayload, resPayload) => {
+app.formResponseProcessor = function(formId, reqPayload, resPayload) {
     // Handle form submission response based on form data
     if (formId === 'signup') {
         // Take the email and the password and use it to log the user in
@@ -134,7 +134,7 @@ app.formResponseProcessor = (formId, reqPayload, resPayload) => {
             email: reqPayload.email,
             password: reqPayload.password
         }
-        app.client.request(undefined, 'user/login', 'POST', undefined, newPayload, (statusCode, newResPayload) => {
+        app.client.request(undefined, 'user/login', 'POST', undefined, newPayload, function(statusCode, newResPayload) {
             if (statusCode !== 200) {
                 console.log(statusCode, newResPayload.Error)
             } else {
@@ -155,7 +155,7 @@ app.formResponseProcessor = (formId, reqPayload, resPayload) => {
 }
 
 // Set a cookie and save the token data to local storage
-app.setSession = (tokenData) => {
+app.setSession = function(tokenData) {
     const tokenString = JSON.stringify(tokenData);
     // Set a cookie
     document.cookie = `token=${tokenString}; path="/"; expires=${new Date(tokenData.expires)}`
@@ -164,7 +164,7 @@ app.setSession = (tokenData) => {
 }
 
 // Bind Logout buttons
-app.bindLogoutButtons = () => {
+app.bindLogoutButtons = function() {
     const logOutButton = document.querySelector('.logout');
 
     // If there are logout buttons on page
@@ -177,8 +177,8 @@ app.bindLogoutButtons = () => {
             const tokenObj = JSON.parse(tokenStr)
             if (tokenObj) {
                 const queryStringObj = { 'tokenId': tokenObj.id }
-                logOutButton.addEventListener('click', () => {
-                    app.client.request(undefined, 'user/logout', 'POST', queryStringObj, undefined, (statusCode) => {
+                logOutButton.addEventListener('click', function() {
+                    app.client.request(undefined, 'user/logout', 'POST', queryStringObj, undefined, function(statusCode) {
                         if (statusCode === 200) {
                             // Redirect the User to the homepage
                             window.location = '/'
@@ -195,12 +195,12 @@ app.bindLogoutButtons = () => {
 }
 
 // Redirect to /my-profile if a valid session already exists
-app.verifyToken = () => {
+app.verifyToken = function() {
     // Check if there is an active Session
     const tokenStr = sessionStorage.getItem('token');
 
     if (tokenStr) {
-        app.client.request(undefined, 'user/verifyToken', 'POST', undefined, undefined, (statusCode, newResPayload) => {
+        app.client.request(undefined, 'user/verifyToken', 'POST', undefined, undefined, function(statusCode, newResPayload) {
             if (statusCode === 200) {
                 if (window.location.pathname === '/login' || window.location.pathname === '/sign-up') {
                     window.location = '/my-page';
@@ -210,7 +210,7 @@ app.verifyToken = () => {
     }
 }
 
-app.init = () => {
+app.init = function() {
     app.verifyToken();
 
     app.bindForms();

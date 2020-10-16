@@ -4,7 +4,6 @@ const { StringDecoder } = require('string_decoder');
 const handlers = require('./routes/page');
 const helpers = require('./util/helpers');
 const config = require('./config');
-const Middleware = require('./middlewares');
 
 // Routes
 const userRoutes = require('./routes/user');

@@ -5,7 +5,7 @@
 const config = {
   'port': 3000,
   'domain': 'http://localhost:3000',
-  'secret': 'fanculo',
+  'secret': 'doNotTryAndBendTheSpoon',
   'errors': {
     '_400': {
       'Error': 'Required fields not provided'
