@@ -19,7 +19,7 @@ userControllers.create = (reqData, callback) => {
     if (reqData.method === 'post') {
         // Check the required fields is provided and correct
         const userModel = new UserSchema({email, name, surname, password} = reqData.payload);
-        console.log(userModel);
+
         if (userModel.email && userModel.name && userModel.surname && userModel.password) {
             userModel.register((errStatusCode,errMessage)=>{
                 if(!errStatusCode) callback(200);
@@ -85,17 +85,15 @@ userControllers.update = (reqData, callback) => {
         // if the user is authenticated
         if (reqData.user) {
             // Check the required fields is provided and correct
-            const name = helpers.validateString(reqData.payload.name);
-            const surname = helpers.validateString(reqData.payload.surname);
+            const email = reqData.user.email;
+            const name = reqData.payload.name;
+            const surname = reqData.payload.surname;
+            const userModel = new UserSchema({email, name, surname});
 
-            if (name || surname) {
-                if (name) reqData.user.name = name;
-                if (surname) reqData.user.surname = surname;
-
-                const userString = JSON.stringify(reqData.user);
-                _data.update('users', reqData.user.email, userString, (err) => {
-                    if (!err) callback(200);
-                    else callback(500, config.errors._500);
+            if (userModel.name || userModel.surname) {
+                userModel.update((errStatusCode,errMessage)=>{
+                    if(!errStatusCode) callback(200);
+                    else callback(errStatusCode,errMessage);
                 })
             } else {
                 callback(400, config.errors._400);
