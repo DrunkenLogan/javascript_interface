@@ -6,6 +6,7 @@
 const _data = require('../lib/data');
 const helpers = require('../util/helpers');
 const config = require('../config');
+const userModel = require('../models/user');
 const myLogger = require('../util/logger');
 
 // Instantiate the user handlers Object
@@ -27,33 +28,9 @@ userControllers.create = (reqData, callback) => {
             false;
 
         if (email && name && surname && passw) {
-            // Check if a user with provided email exist
-            _data.read('users', email, (err, data) => {
-                // if there is an error then a user with that email is not found
-                // so it doesn't exist
-                if (err) {
-                    // Hash the password
-                    const hashedPassword = helpers.hash(passw);
-                    // Form the user Object
-                    const user = {
-                        email: email,
-                        password: hashedPassword,
-                        name: name,
-                        surname: surname
-                    };
-                    // Stringify the data
-                    const userString = JSON.stringify(user);
-                    // Create the user
-                    _data.create('users', email, userString, err => {
-                        if (!err) {
-                            callback(200);
-                        } else {
-                            callback(500, config.errors._500);
-                        }
-                    });
-                } else {
-                    callback(400, config.errors._400);
-                }
+            userModel.register({email, name, surname, passw},(errStatusCode,errMessage)=>{
+                if(!errStatusCode) callback(200);
+                else callback(errStatusCode,errMessage);
             });
         } else {
             callback(400, config.errors._400);
