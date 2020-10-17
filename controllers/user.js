@@ -6,7 +6,7 @@
 const _data = require('../lib/data');
 const helpers = require('../util/helpers');
 const config = require('../config');
-const userModel = require('../models/user');
+const UserSchema = require('../models/userSchema');
 const myLogger = require('../util/logger');
 
 // Instantiate the user handlers Object
@@ -18,17 +18,10 @@ userControllers.create = (reqData, callback) => {
     // Only accept POST request
     if (reqData.method === 'post') {
         // Check the required fields is provided and correct
-        const email = helpers.validateEmail(reqData.payload.email) ?
-            reqData.payload.email :
-            false;
-        const name = helpers.validateString(reqData.payload.name);
-        const surname = helpers.validateString(reqData.payload.surname);
-        const passw = helpers.validatePassword(reqData.payload.password) ?
-            reqData.payload.password :
-            false;
-
-        if (email && name && surname && passw) {
-            userModel.register({email, name, surname, passw},(errStatusCode,errMessage)=>{
+        const userModel = new UserSchema({email, name, surname, password} = reqData.payload);
+        console.log(userModel);
+        if (userModel.email && userModel.name && userModel.surname && userModel.password) {
+            userModel.register((errStatusCode,errMessage)=>{
                 if(!errStatusCode) callback(200);
                 else callback(errStatusCode,errMessage);
             });
