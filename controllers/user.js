@@ -3,8 +3,6 @@
  *************************************************************/
 
 /*********** Dependencies ************/
-const _data = require('../lib/data');
-const helpers = require('../util/helpers');
 const config = require('../config');
 const UserSchema = require('../models/userSchema');
 const myLogger = require('../util/logger');
@@ -17,9 +15,9 @@ const userControllers = {};
 userControllers.create = (reqData, callback) => {
     // Only accept POST request
     if (reqData.method === 'post') {
-        // Check the required fields is provided and correct
+        
         const userModel = new UserSchema({email, name, surname, password} = reqData.payload);
-
+        // Check the required fields are provided and correct
         if (userModel.email && userModel.name && userModel.surname && userModel.password) {
             userModel.register((errStatusCode,errMessage)=>{
                 if(!errStatusCode) callback(200);
@@ -43,34 +41,20 @@ userControllers.create = (reqData, callback) => {
 userControllers.read = (reqData, callback) => {
     // Only accept GET request
     if (reqData.method === 'get') {
-        // Check that required field are provided and valid
-        const email = helpers.validateEmail(reqData.searchParam.get('email')) ?
-            reqData.searchParam.get('email') :
-            false;
-        const tokenId =
-            typeof reqData.headers.token === 'string' &&
-                reqData.headers.token.length === 20 ?
-                reqData.headers.token :
-                false;
-
-        if (email && tokenId) {
-            // Lookup the token and check if it is valid for the given user
-            if (reqData.user) {
-                // Check that a the user exist
-                _data.read('users', email, (err, data) => {
-                    if (!err && data) {
-                        // delete the password
-                        delete data.password;
-                        callback(200, data);
-                    } else {
-                        callback(404, config.errors._404);
-                    }
-                });
+        if (reqData.user) {
+            const email = reqData.user.email;
+            const userModel = new UserSchema({email});
+            // Check the required fields is provided and correct
+            if (userModel.email) {
+                userModel.getUserDetails((userData,errStatusCode,errMessage)=>{
+                    if(userData && !errStatusCode) callback(200,userData);
+                    else callback(errStatusCode,errMessage);
+                })
             } else {
-                callback(403, config.errors._403);
+                callback(400, config.errors._400);
             }
         } else {
-            callback(400, config.errors._400);
+            callback(401, config.errors._403);
         }
     } else {
         callback(405, config.errors._405);
@@ -84,7 +68,7 @@ userControllers.update = (reqData, callback) => {
     if (reqData.method === 'put') {
         // if the user is authenticated
         if (reqData.user) {
-            // Check the required fields is provided and correct
+            // Check the required fields are provided and correct
             const email = reqData.user.email;
             const name = reqData.payload.name;
             const surname = reqData.payload.surname;
@@ -118,11 +102,17 @@ userControllers.delete = (reqData, callback) => {
     // Only accept DELETE request
     if (reqData.method === 'delete') {
         if (reqData.user) {
-            const userEmail = reqData.user.email
-            _data.delete('users', userEmail, (err) => {
-                if (!err) callback(200);
-                else callback(500, config.errors._500);
-            })
+            const email = reqData.user.email;
+            const userModel = new UserSchema({email});
+            // Check the required fields are provided and correct
+            if(userModel.email) {
+                userModel.delete((errStatusCode,errMessage)=>{
+                    if(!errStatusCode) callback(200);
+                    else callback(errStatusCode,errMessage);
+                });
+            } else {
+                callback(400,config.errors._400)
+            }
         } else {
             callback(401, config.errors._401);
             myLogger('error',

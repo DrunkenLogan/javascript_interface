@@ -81,7 +81,6 @@ app.client.request = function (headersObject, path, method, queryStringObject, p
         })
         .catch(function(e) {
             console.log(e);
-
             throw new Error('Something went wrong!')
         })
 }

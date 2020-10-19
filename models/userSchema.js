@@ -12,26 +12,20 @@ class UserSchema {
         this.email = helpers.validateEmail(userData.email) ? userData.email : false;
     }
 
-    getUserDetails = userId => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const userData = await mongooseUserModel.findById(userId);
-                if (userData) resolve(userData);
-                else resolve(false)
-            } catch (e) {
-                myLogger(
-                    'error',
-                    `Could not run getUserDetils. 
-                User id: ${userId}
-                Error at: ${__filename}:20`
-                );
-    
-                reject(e);
+    getUserDetails = callback => {
+        _data.read('users', this.email, (err, data) => {
+            if (!err && data) {
+                // delete the password && session data
+                delete data.password;
+                delete data.sessionToken;
+                callback(data);
+            } else {
+                callback(null, 404, config.errors._404);
             }
         });
     };
     
-    register = (callback) => {
+    register = callback => {
         // Check if a user with provided email exist
         _data.read('users', this.email, (err, data) => {
             // if there is an error then a user with that email is not found
@@ -62,7 +56,7 @@ class UserSchema {
         });
     };
     
-    update = (callback) => {
+    update = callback => {
         _data.read('users', this.email,(err,userData)=>{
             if(!err && userData) {
                 if (this.name) userData.name = this.name;
@@ -79,81 +73,139 @@ class UserSchema {
         })
     };
     
-    delete = (id) => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                console.log(id);
-                const result = await UserModel.findByIdAndDelete(id);
-                resolve(result)
-            } catch (err) {
-                myLogger(
-                    'error',
-                    `Could not run getUserDetils. 
-                User id: ${userId}
-                Error at: ${__filename}:20`
-                );
-                reject(err)
-            }
+    delete = callback => {
+        _data.delete('users', this.email, (err) => {
+            if (!err) callback(false);
+            else callback(500, config.errors._500);
         })
     };
     
-    login = (req, res) => {
-        return new Promise((resolve, reject) => {
-            passport.authenticate('local', (err, user, info) => {
-                // If there is an error or If user not found return false
-                if (!err) {
-                    // Try to log in the user
-                    req.logIn(user, (err) => {
-                        if (!err) {
-                            const userData = {email : user.email, username : user.username}
-                            resolve({
-                                error: false,
-                                userData : userData,
-                            })
-                        } else {
-                            myLogger(
-                                'error:',
-                                `Could not login the user. 
-                                Error: ${err}`
-                            );
-                            console.log(err);
+    login = callback => {
+        // Check if the user exists
+        _data.read('users', this.email, (err, userData) => {
+            if (!err && userData) {
+                // Check that provided password is correct
+                if (helpers.hash(this.password) === userData.password) {
+                    // Check if the user is not already logged in
+                    if (!userData.sessionToken) {
+                        // then create a new session token
+                        this.createSessionToken(userData, sessionToken => {
+                            if (sessionToken) {
+                                callback(sessionToken);
+                            } else {
+                                callback(null, 500, config.errors._500);
+                            }
+                        });
+                    } else {
+                        // If there already is a session token
+                        // Check if the existing token is stil valid
+                        this.verifySessionValidity(userData.sessionToken.id, sessionToken => {
+                            // if there is not valid session token
+                            if (!sessionToken) {
+                                // Create a new one
+                                this.createSessionToken(userData, sessionToken => {
+                                    if (sessionToken) {
+                                        callback(sessionToken);
+                                    } else {
+                                        callback(null, 500, config.errors._500);
+                                    }
+                                })
+                            } else {
+                                // Otherwise return the existing one
+                                callback(sessionToken);
+                            }
+                        })
+                    }
+                } else {
+                    callback(401, config.errors._401);
+                }
+            } else {
+                callback(404, config.errors._404);
+            }
+        });
+    };
     
-                            reject(err);
+    logout = callback => {
+        _data.read('users', this.email, (err,userData)=>{
+            if(!err && userData) {
+                const tokenId = userData.sessionToken.id;
+                if(tokenId) {
+                    // Lookup the token Id
+                    _data.read('tokens', tokenId, (err, tokenData) => {
+                        if (!err && tokenData) {
+                            // Delete the token
+                            _data.delete('tokens', tokenId, err => {
+                                if (!err) {
+                                    // Delete sessionToken from user object
+                                    delete userData.sessionToken;
+                                    // Update user data
+                                    _data.update('users', userData.email, JSON.stringify(userData),(err)=>{
+                                        if(!err) {
+                                            callback(false)
+                                        } else {
+                                            callback(500, config.errors._500);
+                                        }
+                                    })
+                                } else {
+                                    callback(500, config.errors._500);
+                                }
+                            });
+                        } else {
+                            callback(404, config.errors._404);
                         }
                     });
                 } else {
-                    console.log(err);
-    
-                    resolve({
-                        error: true,
-                        message: info.message
-                    });
+                    callback(500, config.errors._500);
                 }
-            })(req, res);
-        })
-    };
-    
-    logout = req => {
-        return new Promise((resolve, reject) => {
-            try {
-                // Passport automatically adds a function logout to the request object. 
-                // Calling it and it will log the user out clearing the login session
-                req.logout();
-                resolve(true)
-            } catch (e) {
-    
-                myLogger(
-                    'error',
-                    `Could not run getUserDetils. 
-                    User id: ${userId}
-                    Error at: ${__filename}:20`
-                );
-    
-                reject(false)
             }
         })
     }
 
+    // Veryfy Session
+    verifySessionValidity = (sessionTokenId, callback) => {
+        // Check if session exists
+        _data.read('tokens', sessionTokenId, (err, sessionToken) => {
+            if (!err, sessionToken) {
+                // Check if token is valid
+                if (sessionToken.validUntil < Date.now()) callback(false);
+                else callback(sessionToken);
+            } else {
+                callback(false);
+            }
+        })
+    }
+
+    // Create Session Token
+    createSessionToken = (userData, callback) => {
+        // Create session token string
+        const sessionTokenId = helpers.createRandomString(20);
+        // Set expiration in 1h
+        const expires = Date.now() + 1000 * 60 * 60;
+        // Instantiate the session token object
+        const sessionToken = {
+            id: sessionTokenId,
+            email: userData.email,
+            validUntil: expires
+        };
+        // Stringify the token
+        const sessionTokenStr = JSON.stringify(sessionToken);
+        // Save the token
+        _data.create('tokens', sessionTokenId, sessionTokenStr, err => {
+            if (!err) {
+                // Update the user data with the session token data
+                userData.sessionToken = sessionToken;
+                _data.update('users', userData.email, JSON.stringify(userData), err => {
+                    if (!err) {
+                        callback(sessionToken);
+                    } else {
+                        callback(false);
+                    }
+                })
+            } else {
+                callback(false);
+            }
+        });
+    }
 }
 
 module.exports = UserSchema;
