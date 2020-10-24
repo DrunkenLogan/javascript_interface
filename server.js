@@ -59,8 +59,7 @@ class Server {
           staticPageRoutes.notFound;
 
       // Figure out if the request is for a public resource
-      chosenHandler =
-        reqData.path.indexOf('public/') > -1 ? staticPageRoutes.public : chosenHandler;
+      chosenHandler = reqData.path.indexOf('public/') > -1 ? staticPageRoutes.public : chosenHandler;
 
       chosenHandler(reqData, (statusCode, payload, contentType, headersObj = {}) => {
         statusCode = typeof statusCode === 'number' ? statusCode : 200;
@@ -71,8 +70,7 @@ class Server {
         let stringPayload = '';
         if (contentType === 'json') {
           res.setHeader('Content-Type', 'application/json');
-          payload =
-            typeof payload === 'object' && payload !== null ? payload : {};
+          payload = typeof payload === 'object' && payload !== null ? payload : {};
           stringPayload = JSON.stringify(payload);
         }
         if (contentType === 'html') {

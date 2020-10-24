@@ -3,8 +3,6 @@
  *************************************************************/
 
 /*********** Dependencies ************/
-const _data = require('../lib/data');
-const helpers = require('../util/helpers');
 const config = require('../config');
 const UserSchema = require('../models/userSchema');
 const myLogger = require('../util/logger');

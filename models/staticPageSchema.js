@@ -1,5 +1,4 @@
 /*********** Dependencies ************/
-const myLogger = require('../util/logger');
 const _data = require('../lib/data');
 const PageSchema = require('./pageSchema');
 

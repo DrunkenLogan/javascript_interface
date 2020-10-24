@@ -1,6 +1,5 @@
 /*********** Dependencies ************/
 const myLogger = require('../util/logger');
-const helpers = require('../util/helpers');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,7 +15,7 @@ class PageSchema {
             fs.readFile(`${pathName}/${viewName}.html`, 'utf8', (err, viewString) => {
                 if (!err && viewString) {
                     // Interpolate the string
-                    const finalViewString = helpers.interpolate(
+                    const finalViewString = this.interpolate(
                         viewString,
                         viewContentData
                     );
