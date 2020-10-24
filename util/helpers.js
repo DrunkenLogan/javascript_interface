@@ -78,7 +78,7 @@ helpers.formatDate = (date, format) => {
 helpers.getStaticAsset = (asset, callback) => {
   asset = typeof asset === 'string' && asset.length > 0 ? asset : false;
   if (asset) {
-    const pathName = path.join(__dirname, '../public');
+    const pathName = path.join(__dirname, '../assets');
     fs.readFile(`${pathName}/${asset}`, (err, data) => {
       if (!err && data) {
         callback(false, data);

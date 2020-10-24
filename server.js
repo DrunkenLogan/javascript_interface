@@ -58,8 +58,8 @@ class Server {
           router[reqData.path] :
           staticPageRoutes.notFound;
 
-      // Figure out if the request is for a public resource
-      chosenHandler = reqData.path.indexOf('public/') > -1 ? staticPageRoutes.public : chosenHandler;
+      // Figure out if the request is for a assets resource
+      chosenHandler = reqData.path.indexOf('assets/') > -1 ? staticPageRoutes.assets : chosenHandler;
 
       chosenHandler(reqData, (statusCode, payload, contentType, headersObj = {}) => {
         statusCode = typeof statusCode === 'number' ? statusCode : 200;
@@ -143,7 +143,7 @@ const router = {
   '': staticPageRoutes.home,
   'login': staticPageRoutes.login,
   'signup': staticPageRoutes.signup,
-  'public': staticPageRoutes.public,
+  'assets': staticPageRoutes.assets,
   'my-profile': profileRoute.profile,
   'user/login': sessionRoutes.login,
   'user/logout': sessionRoutes.logout,

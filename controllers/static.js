@@ -79,9 +79,9 @@ staticController.login = (reqData, callback) => {
 
 // Public Resources Handler
 // Required Fields: asset
-staticController.public = (reqData, callback) => {
+staticController.assets = (reqData, callback) => {
     // Get asset name from route
-    const assetPath = reqData.path.replace('public/', '');
+    const assetPath = reqData.path.replace('assets/', '');
     //Check that required fields are provided and valid
     if (assetPath) {
         // Get the static asset

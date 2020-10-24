@@ -30,7 +30,7 @@ staticRoutes.login = (reqData, callback) => staticController.login(reqData, call
 
 // Public Resources Handler
 // Required Fields: asset
-staticRoutes.public = (reqData, callback) => staticController.public(reqData, callback);
+staticRoutes.assets = (reqData, callback) => staticController.assets(reqData, callback);
 
 // Handler.notFound
 staticRoutes.notFound = (reqData, callback) => staticController.notFound(reqData, callback);

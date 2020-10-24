@@ -1,6 +1,6 @@
 {
     "head.title": "Homepage | Site",
     "head.description": "Description | Site",
-    "head.styles": "../public/css/signup.css",
+    "head.styles": "../assets/css/signup.css",
     "body.h1": "Welcome To Simple Interface"
 }

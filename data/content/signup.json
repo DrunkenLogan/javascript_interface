@@ -1,7 +1,7 @@
 {
     "head.title": "Sign Up | Site",
     "head.description": "Description | Site",
-    "head.styles": "../public/css/signup.css",
+    "head.styles": "../assets/css/signup.css",
     "body.h1": "Sign up",
     "form.id": "signup",
     "form.action": "../user/signup"
