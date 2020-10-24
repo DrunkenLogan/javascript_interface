@@ -102,8 +102,7 @@ userControllers.delete = (reqData, callback) => {
     // Only accept DELETE request
     if (reqData.method === 'delete') {
         if (reqData.user) {
-            const email = reqData.user.email;
-            const userModel = new UserSchema({email});
+            const userModel = new UserSchema({email} = reqData.user);
             // Check the required fields are provided and correct
             if(userModel.email) {
                 userModel.delete((errStatusCode,errMessage)=>{

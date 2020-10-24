@@ -1,14 +1,14 @@
 /* Dependencies */
 const http = require('http');
 const { StringDecoder } = require('string_decoder');
-const handlers = require('./routes/page');
 const helpers = require('./util/helpers');
 const config = require('./config');
 
 // Routes
 const userRoutes = require('./routes/user');
 const sessionRoutes = require('./routes/session');
-const pageRoutes = require('./routes/page');
+const profileRoute = require('./routes/profile');
+const staticPageRoutes = require('./routes/static');
 
 // Globals
 const decoder = new StringDecoder('utf8');
@@ -56,11 +56,11 @@ class Server {
       let chosenHandler =
         typeof router[reqData.path] !== 'undefined' ?
           router[reqData.path] :
-          handlers.notFound;
+          staticPageRoutes.notFound;
 
       // Figure out if the request is for a public resource
       chosenHandler =
-        reqData.path.indexOf('public/') > -1 ? handlers.public : chosenHandler;
+        reqData.path.indexOf('public/') > -1 ? staticPageRoutes.public : chosenHandler;
 
       chosenHandler(reqData, (statusCode, payload, contentType, headersObj = {}) => {
         statusCode = typeof statusCode === 'number' ? statusCode : 200;
@@ -141,20 +141,20 @@ class Server {
 
 // Instantiate req router object
 const router = {
-  'ping': pageRoutes.ping,
-  '': pageRoutes.home,
-  'login': pageRoutes.login,
-  'signup': pageRoutes.signup,
-  'notFound': pageRoutes.notFound,
-  'public': pageRoutes.public,
-  'my-profile': pageRoutes.myProfile,
+  'ping': staticPageRoutes.ping,
+  '': staticPageRoutes.home,
+  'login': staticPageRoutes.login,
+  'signup': staticPageRoutes.signup,
+  'public': staticPageRoutes.public,
+  'my-profile': profileRoute.profile,
   'user/login': sessionRoutes.login,
   'user/logout': sessionRoutes.logout,
   'user/signup': userRoutes.signup,
   'user/update': userRoutes.update,
   'user/delete': userRoutes.delete,
-  'user/profile': userRoutes.profile,
-  'user/verifyToken': userRoutes.verifyToken
+  // 'user/profile': userRoutes.profile,
+  'user/verifyToken': userRoutes.verifyToken,
+  'notFound': staticPageRoutes.notFound
 };
 
 module.exports = Server;

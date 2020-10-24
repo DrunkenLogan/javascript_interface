@@ -17,7 +17,6 @@ const sessionControllers = {};
 sessionControllers.createSession = (reqData, callback) => {
     // Only accept POST request
     if (reqData.method === 'post') {
-
         const userModel = new UserSchema({email, password} = reqData.payload);
         // Check that required field are provided and valid
         if(userModel.email && userModel.password) {

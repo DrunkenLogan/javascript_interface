@@ -62,12 +62,10 @@ class UserSchema {
                 if (this.name) userData.name = this.name;
                 if (this.surname) userData.surname = this.surname;
                 _data.update('users', this.email, JSON.stringify(userData), (err) => {
-                    console.log('update');
                     if (!err) callback(false);
                     else callback(500, config.errors._500);
                 })
             } else {
-                console.log('read');
                 callback(500, config.errors._500);
             }
         })
