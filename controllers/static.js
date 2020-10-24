@@ -77,37 +77,6 @@ staticController.login = (reqData, callback) => {
     }
 };
 
-// // logout Handler
-// staticController.logout = (reqData, callback) => {
-//     // Only accept get requests
-//     if (reqData.method === 'get') {
-//         // Get login template data
-//         _data.read('content', 'login', (err, contentData) => {
-//             if (!err && contentData) {
-
-//                 helpers.getTemplate('login', contentData, (err, templateString) => {
-//                     if (!err && templateString) {
-//                         // Add global templates
-//                         helpers.addGlobaltemplates(templateString, contentData, (err, finalString) => {
-//                             if (!err && finalString) {
-//                                 callback(200, finalString, 'html');
-//                             } else {
-//                                 callback(500, undefined, 'html');
-//                             }
-//                         });
-//                     } else {
-//                         callback(500, undefined, 'html');
-//                     }
-//                 });
-//             } else {
-//                 callback(500, undefined, 'html');
-//             }
-//         });
-//     } else {
-//         callback(405, undefined, 'html');
-//     }
-// };
-
 // Public Resources Handler
 // Required Fields: asset
 staticController.public = (reqData, callback) => {

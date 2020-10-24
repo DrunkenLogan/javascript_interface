@@ -197,10 +197,21 @@ class UserSchema {
                         callback(sessionToken);
                     } else {
                         callback(false);
+                        myLogger('Internal error',
+                        `Error while update user with tokaen data. 
+                         sessionTokenId: ${JSON.stringify(sessionTokenId)},
+                         sessionTokenStr: ${JSON.stringify(sessionTokenStr)},
+                         userEmail: ${JSON.stringify(userData.email)},
+                         error message: ${err.message}`);
                     }
                 })
             } else {
                 callback(false);
+                myLogger('Internal error',
+                `Error while Creating token. 
+                 sessionTokenId: ${JSON.stringify(sessionTokenId)},
+                 sessionTokenStr: ${JSON.stringify(sessionTokenStr)},
+                 error message: ${err.message}`);
             }
         });
     }

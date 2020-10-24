@@ -9,7 +9,6 @@ const ProfileSchema = require('../models/profileSchema');
 // Instantiate the handlers object
 const profileController = {};
 
-
 // my-profile Handler
 profileController.profile = (reqData, callback) => {
     // Only accept get requests

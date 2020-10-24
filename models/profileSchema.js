@@ -41,7 +41,7 @@ class StaticPageSchema extends PageSchema {
                         }
                     });
                 } else {
-                    callback(500, undefined, 'html')
+                    callback(500);
                 }
             })
     }

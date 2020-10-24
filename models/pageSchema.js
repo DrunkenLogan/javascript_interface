@@ -22,24 +22,28 @@ class PageSchema {
                     );
                     callback(false, finalViewString);
                 } else {
-                    callback('The template could not be found');
+                    callback('Error');
+                    myLogger('Internal error',
+                    `The template could not be found. 
+                     viewName: ${JSON.stringify(viewName)},
+                     viewContendData: ${JSON.stringify(viewContentData)},
+                     error message: ${err.message}`);
                 }
             });
         } else {
-            callback('A valid template name was not specified');
+            callback('Error');
+            myLogger('Internal error',
+            `A valid Template or contend Data were not specified. 
+             viewName: ${JSON.stringify(viewName)},
+             viewContendData: ${JSON.stringify(viewContentData)}`);
         }
     };
 
     // A function to add global templates to a given template
     addGlobaltemplates = (viewString, viewContentData, callback) => {
         // Validate arguments
-        viewString =
-        typeof viewString === 'string' && viewString.length > 0 ?
-            viewString :
-            '';
-        viewContentData =
-        typeof viewContentData === 'object' && viewContentData !== null ?
-            viewContentData : {};
+        viewString = typeof viewString === 'string' && viewString.length > 0 ? viewString : '';
+        viewContentData = typeof viewContentData === 'object' && viewContentData !== null ? viewContentData : {};
     
         if (viewString && viewContentData) {
             // Get the header
@@ -51,28 +55,37 @@ class PageSchema {
                             const finalString = headerString + viewString + footerString;
                             callback(false, finalString);
                         } else {
-                            callback('Could not fetch the footer');
+                            callback('Error');
+                            myLogger('Internal error',
+                            `Could not fetch the footer. 
+                             viewString: ${JSON.stringify(viewString)},
+                             viewContendData: ${JSON.stringify(viewContentData)},
+                             error message: ${err.message}`);
                         }
                     });
                 } else {
-                    callback('Could not fetch the header');
+                    callback('Error');
+                    myLogger('Internal error',
+                    `Could not fetch the header. 
+                     viewString: ${JSON.stringify(viewString)},
+                     viewContendData: ${JSON.stringify(viewContentData)},
+                     error message: ${err.message}`);
                 }
             });
         } else {
-            callback('A valid template name was not specified');
+            callback('Error');
+            myLogger('Internal error',
+            `A valid viewString or viewContentData was not passed. 
+             viewString: ${JSON.stringify(viewString)},
+             viewContendData: ${JSON.stringify(viewContentData)}`);
         }
     };
 
     // A function to fill in page templates with page specific content
     interpolate = (viewString, templateDataObject) => {
         // Validate arguments
-        viewString =
-        typeof viewString === 'string' && viewString.length > 0 ?
-            viewString :
-            '';
-        templateDataObject =
-        typeof templateDataObject === 'object' && templateDataObject !== null ?
-            templateDataObject : {};
+        viewString = typeof viewString === 'string' && viewString.length > 0 ? viewString : '';
+        templateDataObject = typeof templateDataObject === 'object' && templateDataObject !== null ? templateDataObject : {};
     
         for (let keyName in templateDataObject) {
             if (
