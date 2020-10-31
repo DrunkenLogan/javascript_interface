@@ -1,7 +1,7 @@
 {
     "head.title": "Login | Site",
     "head.description": "Description | Site",
-    "head.styles": "../assets/css/signup.css",
+    "head.styles": "../assets/css/home.css",
     "body.h1": "Login",
     "form.id": "signin",
     "form.action": "../user/login"

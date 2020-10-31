@@ -1,23 +1,21 @@
-<header>
-    <h1>{body.h1}</h1>
-</header>
-<main>
-    <form action="{form.action}" id="{form.id}" method="POST">
-        <label for="email">Email</label>
-        <input name="email" type="email" placeholder="Type your Email" data-validate="Email is required" required>
-        <span class="border_effect"></span>
-        <label for="password">Password</label>
-        <input name="password" type="password" placeholder="Type your password" data-validate="Password is required" required>
-        <span class="border_effect"></span>
-        <p>Forgot your password?</p>
-        <input type="submit" value="Login">
-    </form>
-    <p>Or Sign Up Using</p>
-    <div class="social_logins">
-        <div><img src="../assets/images/facebook.png" alt="facebook logo"></div>
-        <div><img src="../assets/images/twitter.png" alt="twitter logo"></div>
-        <div><img src="../assets/images/google-plus.png" alt="google+ logo"></div>
-    </div>
-    <p>Or Sign Up Using</p>
-    <a href="signup">SIGN UP</p>
-</main>
+<div class="body__container">
+    <header>
+        <h1>{body.h1}</h1>
+    </header>
+    <main>
+        <form action="{form.action}" id="{form.id}" method="POST">
+            <label for="email">Email</label>
+            <input name="email" type="email" placeholder="Type your Email" data-validate="Email is required" required>
+            <span class="border_effect"></span>
+            <label for="password">Password</label>
+            <input name="password" type="password" placeholder="Type your password" data-validate="Password is required" required>
+            <span class="border_effect"></span>
+            <p>Forgot your password?</p>
+            <div class="form__buttonContainer">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        <p>Or Sign Up Using</p>
+        <a href="signup">Sign Up</a>
+    </main>
+</div>

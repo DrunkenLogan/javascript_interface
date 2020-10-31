@@ -2,8 +2,10 @@
 @import '../variables.scss';
 
 /*******************
-* Content Model Fix
+* GLOBAL Styles
 *******************/
+
+/*** Content Model Fix ***/
 * {
     box-sizing: border-box;
 
@@ -13,16 +15,20 @@
     }
 }
 
-/**************
-* Global Styles
-***************/
-
 html {
     font-family: 'Poppins', sans-serif;
-    color: $primary-colour
+    color: $primary-colour;
+    /* Set sizing so that 1rem = 10px */
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+    overflow: auto;
 }
 
 a {
     text-decoration: none;
-    color: $secondary-colour;
+    color: #b6b6b6;
+}
+
+a:hover {
+    text-decoration: underline;
 }

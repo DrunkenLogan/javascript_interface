@@ -1,0 +1,30 @@
+/*******************
+* GLOBAL Styles
+*******************/
+/*** Content Model Fix ***/
+* {
+  box-sizing: border-box;
+}
+*:before, *:after {
+  box-sizing: inherit;
+}
+
+html {
+  font-family: "Poppins", sans-serif;
+  color: #333333;
+  /* Set sizing so that 1rem = 10px */
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+  overflow: auto;
+}
+
+a {
+  text-decoration: none;
+  color: #b6b6b6;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=common.css.map */

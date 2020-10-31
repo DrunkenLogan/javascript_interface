@@ -3,7 +3,7 @@ const helpers = require('../util/helpers');
 const _data = require('../lib/data');
 const PageSchema = require('./pageSchema');
 
-class StaticPageSchema extends PageSchema {
+class ProfileSchema extends PageSchema {
     constructor(email) {
         super();
         this.email = helpers.validateEmail(email) ? email : false;
@@ -46,7 +46,7 @@ class StaticPageSchema extends PageSchema {
     }
 }
 
-module.exports = StaticPageSchema;
+module.exports = ProfileSchema;
 
 
 
