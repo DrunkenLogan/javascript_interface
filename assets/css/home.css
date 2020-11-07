@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*******************
 * HOME Styles
 *******************/
@@ -21,7 +22,7 @@ body {
 
 h1 {
   font-weight: 600;
-  font-size: 10vw;
+  font-size: 12vw;
   margin: 0 auto 4rem;
   text-align: center;
   line-height: 1.3em;
@@ -29,7 +30,7 @@ h1 {
 
 main {
   position: relative;
-  font-size: 5.5vw;
+  font-size: 4.5vw;
   text-align: center;
   padding: 3rem 2rem;
 }
@@ -75,7 +76,6 @@ form {
   margin-bottom: 5.5rem;
 }
 form p {
-  text-align: right;
   margin: 0.9rem 0 4.5rem 0;
 }
 form input {
@@ -96,6 +96,10 @@ form input:-webkit-autofill:active {
   box-shadow: 0 0 150px 0 white inset !important;
 }
 
+#signin p {
+  text-align: right;
+}
+
 ::placeholder {
   /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #b6b6b6;
@@ -113,7 +117,7 @@ form input:-webkit-autofill:active {
   color: #b6b6b6;
 }
 
-.border_effect {
+.form__borderEffect {
   display: block;
   transition: all 400ms;
   width: 0;
@@ -124,12 +128,12 @@ form input:-webkit-autofill:active {
   margin-bottom: 25px;
 }
 
-.border_effect:last-child {
+.form__borderEffect:last-child {
   margin-bottom: auto;
 }
 
-input:focus + .border_effect,
-input:focus + .border_effect {
+input:focus + .form__borderEffect,
+input:focus + .form__borderEffect {
   width: 100%;
 }
 
@@ -169,6 +173,56 @@ button[type=submit]::before {
 
 .form__buttonContainer:hover button[type=submit]::before {
   margin-left: -100%;
+}
+
+/******* PASSWORD CHECK ******/
+/* The message box is shown when the user clicks on the password field */
+.form__passwordHelper,
+.form__confirmPasswordHelper {
+  position: absolute;
+  display: none;
+  background: white;
+  z-index: 3;
+  border: 1px solid #7F7F7F;
+  border-radius: 20px;
+  padding: 1rem 3rem;
+  left: -5%;
+  width: 110%;
+  transition: opacity 0.2s linear;
+  font-size: 1.1em;
+  opacity: 0;
+}
+.form__passwordHelper h3,
+.form__confirmPasswordHelper h3 {
+  font-size: 1em;
+}
+.form__passwordHelper p,
+.form__confirmPasswordHelper p {
+  padding: 1rem 0 1rem 3.5rem;
+  font-size: 0.8em;
+  margin-bottom: 2.5rem;
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  left: -3.5rem;
+  content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.invalid {
+  color: red;
+}
+
+.invalid:before {
+  position: relative;
+  left: -3.5rem;
+  content: "✖";
 }
 
 @media all and (min-width: 500px) {

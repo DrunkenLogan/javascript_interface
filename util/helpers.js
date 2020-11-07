@@ -23,10 +23,13 @@ helpers.validateString = str => {
 }
 
 // A function to validate a password:
-// Password between 7 to 15 characters which contain at least one numeric digit and a special character
+// Password between 7 to 15 characters 
+// at least one numeric digit 
+// at least one letter
+// at least a special character
 // test password: ase34d@
 helpers.validatePassword = pw => {
-  const re = /^^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+  const re = /^^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
   return re.test(String(pw));
 };
 

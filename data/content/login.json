@@ -3,6 +3,7 @@
     "head.description": "Description | Site",
     "head.styles": "../assets/css/home.css",
     "body.h1": "Login",
+    "body.script": "../assets/js/form.js",
     "form.id": "signin",
     "form.action": "../user/login"
 }

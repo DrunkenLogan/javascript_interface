@@ -25,7 +25,7 @@ body {
 
 h1 {
     font-weight: 600;
-    font-size: 10vw;
+    font-size: 12vw;
     margin: 0 auto 4rem;
     text-align: center;
     line-height: 1.3em;
@@ -33,7 +33,7 @@ h1 {
 
 main {
     position: relative;
-    font-size: 5.5vw;
+    font-size: 4.5vw;
     text-align: center;
     padding: 3rem 2rem;
 }
@@ -52,7 +52,7 @@ main::after {
 }
 
 .main__home a {
-        color: #efefef;
+    color: #efefef;
 }
 
 .main__home::after {
@@ -80,10 +80,8 @@ form {
     margin-bottom: 5.5rem;
 
     p {
-        text-align: right;
         margin: .9rem 0 4.5rem 0;
     }
-
 
     input {
         @include inputReset;
@@ -95,28 +93,36 @@ form {
     }
 
     input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
-    input:-webkit-autofill:active  {
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
         -webkit-box-shadow: 0 0 150px 0 white inset !important;
         box-shadow: 0 0 150px 0 white inset !important;
     }
 }
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+#signin p {
+    text-align: right;
+}
+
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #b6b6b6;
-    opacity: 1; /* Firefox */
-  }
-  
-  :-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: #b6b6b6;
-  }
-  
-  ::-ms-input-placeholder { /* Microsoft Edge */
+    opacity: 1;
+    /* Firefox */
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
     color: #b6b6b6;
 }
 
-.border_effect {
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #b6b6b6;
+}
+
+.form__borderEffect {
     display: block;
     transition: all 400ms;
     width: 0;
@@ -127,13 +133,12 @@ form {
     margin-bottom: 25px;
 }
 
-.border_effect:last-child {
+.form__borderEffect:last-child {
     margin-bottom: auto;
 }
 
-
-input:focus+.border_effect,
-input:focus+.border_effect {
+input:focus+.form__borderEffect,
+input:focus+.form__borderEffect {
     width: 100%;
 }
 
@@ -155,7 +160,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]::before {
-    content:"";
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -171,6 +176,63 @@ button[type="submit"]::before {
 
 .form__buttonContainer:hover button[type="submit"]::before {
     margin-left: -100%;
+}
+
+.form__buttonContainer::after {
+    content: attr(data-err);
+    display: block;
+    color: #D85656;
+    position: absolute;
+}
+
+/******* PASSWORD CHECK ******/
+/* The message box is shown when the user clicks on the password field */
+.form__passwordHelper,
+.form__confirmPasswordHelper {
+    position: absolute;
+    display: none;
+    background: white;
+    z-index: 3;
+    border: 1px solid #7F7F7F;
+    border-radius: 20px;
+    padding: 1rem 3rem;
+    left: -5%;
+    width: 110%;
+    transition: opacity .2s linear;
+    font-size: 1.1em;
+    opacity: 0;
+
+    h3 {
+        font-size: 1em;
+    }
+
+    p {
+        padding: 1rem 0 1rem 3.5rem;
+        font-size: .8em;
+        margin-bottom: 2.5rem;
+    }
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.valid {
+    color: green;
+}
+
+.valid:before {
+    position: relative;
+    left: -3.5rem;
+    content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.invalid {
+    color: red;
+}
+
+.invalid:before {
+    position: relative;
+    left: -3.5rem;
+    content: "✖";
 }
 
 
